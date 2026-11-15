@@ -1,5 +1,8 @@
 node_modules/
 dist/
+.venv-forecast/
+outputs/forecast/
+__pycache__/
 *.local
 .env
 .env.*

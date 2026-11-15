@@ -28,6 +28,30 @@ Proposed simplification: flat ground means common ground elevation, not equal tr
 
 ## User-selected direction
 
+### Small-data forecasting experiment (2026-11-15)
+
+The user accepted the recommended initial ML target: predict whether an inversion will occur at the same site 30 minutes later. Evaluate an existing pretrained tabular foundation model against a simple baseline; do not pretrain a foundation model from scratch. The user explicitly requests a very small dataset. An exact row budget and model are not yet selected.
+
+The intended data direction includes multiple sites/dates and combining weather sources. Each example belongs to one site and time; additional sources supply identified context, never a fabricated second tower level. Current rule-based GO / CAUTION / STOP screening remains separate from the forecast experiment.
+
+The user subsequently accepted two sites with seven consecutive days each, at 30-minute intervals: at most 672 raw site-interval records before quality filtering and target construction. SRER is the existing local candidate; the second site's coverage remains to be verified.
+
+The target is whether upper mean temperature exceeds lower mean temperature during the next 30-minute interval. For example, inputs available by 10:00 predict the interval 10:00-10:30, not every instantaneous condition within it. This predicts inversion presence, including persistence, rather than onset alone.
+
+Use chronological training, validation and test partitions, with a persistence baseline that predicts the next interval's inversion state equals the current state. Assess missed inversions and false alarms, and separately inspect onset and dissipation. This small experiment does not establish operational spraying reliability.
+
+The user accepted TabPFN as the first pretrained-model candidate, running locally without initial fine-tuning, and a controlled comparison of tower-only inputs against tower inputs plus additional weather context. Exact package/model version, local execution feasibility and source availability still require verification. Tower inputs may include paired temperatures, wind speeds/directions and recent changes; context candidates include humidity and cloud cover. Both variants must use the same evaluation partitions. Context must be available at the prediction cutoff; historical reanalysis must not be silently treated as an archived forecast available at that time.
+
+The user accepted cloud cover as a first-version context feature, subject to the availability check above. Geographic information is used for source-location matching and display, not as model input in this two-site experiment. Fixed site attributes could merely identify the two sites; defer terrain/elevation/land-cover predictors until more sites and evaluation on unseen sites are feasible. Sensor height above ground remains distinct from terrain elevation and is retained as measurement metadata.
+
+The user accepted preserving negative results: if TabPFN does not improve on the baseline, present the baseline; if eligible cloud/context data cannot be verified, complete the tower-only experiment. Forecasts are displayed separately and do not override current rule-based screening.
+
+The user additionally requires type safety and confidence information and accepted typed forecast/result contracts, explicit available/unavailable states, and runtime validation of external data and model output. Missing values, invalid units and invalid probabilities must not appear as normal predictions.
+
+The user accepted separate display of model-estimated inversion probability, reliability status (uncalibrated small-sample experiment initially), and input-data quality. Probability is not a claim of model accuracy. Do not assign high/medium/low reliability labels from model probability alone. If the selected persistence baseline supplies only a binary forecast, do not fabricate a probability or confidence percentage.
+
+The design interview's product choices are resolved. Final shared-understanding confirmation is pending before implementation. Verify the second site's data, time-eligible cloud context, model access/version and local execution as implementation prerequisites. A demo deadline has not been provided. These are experiment decisions, not evidence of validated forecast or drift performance.
+
 The user selected all three output ambitions, starting with explainable weather screening. Quantitative drift/deposition prediction and equipment advice remain later ambitions, not validated capabilities or committed implementation specifications.
 
 Initial application method: orchard airblast sprayer, accepting the recommended starting scope.

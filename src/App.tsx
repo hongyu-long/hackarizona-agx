@@ -3,6 +3,7 @@ import { defaults, evaluateRisk, validConfig, type Config, type Pair, type Readi
 import { readLog, writeLog, storageKey, type Evaluation } from './features/weather/storage';
 import { useOrchardSetup } from './features/orchard/Onboarding';
 import scenarios from './data/scenarios.json';
+import { ForecastPanel } from './features/forecast/ForecastPanel';
 import { DashboardPage } from './pages/DashboardPage';
 import { ObservationsPage } from './pages/ObservationsPage';
 import { OrchardPage } from './pages/OrchardPage';
@@ -12,12 +13,13 @@ import './styles/branding.css';
 import './styles/onboarding.css';
 import './styles/pages.css';
 
-type Page = 'dashboard' | 'orchard' | 'observations' | 'rules';
+type Page = 'dashboard' | 'orchard' | 'observations' | 'rules' | 'forecast';
 const pages: { id: Page; label: string }[] = [
   { id: 'dashboard', label: 'Dashboard' },
   { id: 'orchard', label: 'Orchard' },
   { id: 'observations', label: 'Observations' },
-  { id: 'rules', label: 'Rules' }
+  { id: 'rules', label: 'Rules' },
+  { id: 'forecast', label: 'Forecast experiment' }
 ];
 
 function pageFromHash(): Page | null {
@@ -118,6 +120,7 @@ export function App() {
     <main className="app-main">
       {notificationError && <p role="status" className="app-notice">{notificationError}</p>}
       {currentPage === 'dashboard' && <DashboardPage current={current} scenario={scenario} scenarios={scenarios} config={config} onScenario={id => run(id)} onReassess={() => run()}/>}
+      {currentPage === 'forecast' && <ForecastPanel/>}
       {currentPage === 'orchard' && <OrchardPage controller={orchardSetup} onComplete={() => navigate('dashboard')}/>}
       {currentPage === 'observations' && <ObservationsPage records={records} savedIds={savedIds} saveError={saveError} blocked={blocked} selectedId={selectedId} onDownload={() => download(records)} onClear={clearLog} onRetry={() => persist(records)} onSelect={setSelectedId}/>}
       {currentPage === 'rules' && <RulesPage config={config} draft={draft} error={configError} onDraftChange={(key, value) => setDraft(previous => ({ ...previous, [key]: value }))} onSubmit={applyRules}/>}

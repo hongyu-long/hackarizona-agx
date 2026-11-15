@@ -4,6 +4,9 @@ To Spray or Not to Spray analyzes weather observations at multiple heights in an
 
 ## Language
 
+**Inversion forecast**:
+A prediction that upper air temperature will exceed lower air temperature at the same site in a future observation interval. It is distinct from detecting an inversion in readings already observed and from predicting pesticide drift.
+
 **Observation height**:
 The vertical distance of a weather measurement above the local ground surface. It is distinct from elevation above sea level.
 _Avoid_: Elevation when referring to sensor height above ground.
