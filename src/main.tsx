@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { defaults, evaluateRisk, finite, validConfig, type Config, type Pair, type Reading } from './risk';
-import { readLog, writeLog, storageKey, type Evaluation } from './storage';
-import scenarios from './scenarios.json';
-import './style.css';
-import { OrchardSetup, useOrchardSetup } from './Onboarding';
-import { exportSetup } from './orchard';
-import './onboarding.css';
+import { defaults, evaluateRisk, finite, validConfig, type Config, type Pair, type Reading } from './features/weather/risk';
+import { readLog, writeLog, storageKey, type Evaluation } from './features/weather/storage';
+import scenarios from './data/scenarios.json';
+import './styles/style.css';
+import { OrchardSetup, useOrchardSetup } from './features/orchard/Onboarding';
+import { exportSetup } from './features/orchard/orchard';
+import './styles/onboarding.css';
 
 const descriptions = { GO: 'No configured weather flags', CAUTION: 'Review changing conditions', STOP: 'Weather risk detected', UNAVAILABLE: 'Not enough reliable data' };
 const nextChecks = { GO: 'Check the pesticide label and on-site conditions before deciding.', CAUTION: 'Review the flagged differences and reassess conditions before deciding.', STOP: 'Wait and reassess the flagged conditions. Follow the pesticide label.', UNAVAILABLE: 'Restore complete, current readings from both heights, then reassess.' };
