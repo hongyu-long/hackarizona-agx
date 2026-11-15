@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { evaluateRisk, type Pair, type Result } from './risk';
-import { loadEvaluationDatasets, type EvaluationCase, type EvaluationDataset } from './evaluationCases';
+import { estimateDailyProportionInterval, loadEvaluationDatasets, type EvaluationCase, type EvaluationDataset } from './evaluationCases';
 import type { Config } from './risk';
 
 type Props = { config: Config };
@@ -59,6 +59,9 @@ export function EvaluationCasesPanel({ config }: Props) {
     if (item.record.upperTemperatureC > item.record.lowerTemperatureC) summary.inversions += 1;
     return summary;
   }, { GO: 0, CAUTION: 0, STOP: 0, UNAVAILABLE: 0, inversions: 0 }), [assessed]);
+  const inversionInterval = useMemo(() => dataset
+    ? estimateDailyProportionInterval(dataset.records, record => record.upperTemperatureC > record.lowerTemperatureC)
+    : null, [dataset]);
 
   function selectDataset(id: EvaluationDataset['id']) {
     setDatasetId(id);
@@ -87,6 +90,9 @@ export function EvaluationCasesPanel({ config }: Props) {
             <span>{counts.STOP.toLocaleString()} STOP · {counts.CAUTION.toLocaleString()} CAUTION · {counts.GO.toLocaleString()} GO</span>
           </div>
         </div>
+        {inversionInterval && <p className="historical-source-note">
+          Inversion rate: {(inversionInterval.estimate * 100).toFixed(1)}% (approximate 95% confidence interval: {(inversionInterval.lower * 100).toFixed(1)}–{(inversionInterval.upper * 100).toFixed(1)}%, based on {inversionInterval.days} daily blocks). This describes day-to-day variation in recorded inversions, not confidence in an individual case or forecast.
+        </p>}
         <div className="case-navigation">
           <button onClick={() => setIndex(value => Math.max(0, value - 1))} disabled={index === 0}>Previous case</button>
           <label>Case {index + 1} of {assessed.length.toLocaleString()}

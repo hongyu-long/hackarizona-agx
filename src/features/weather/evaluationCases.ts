@@ -18,6 +18,13 @@ export type EvaluationDataset = {
   records: EvaluationCase[];
 };
 
+export type DailyProportionInterval = {
+  estimate: number;
+  lower: number;
+  upper: number;
+  days: number;
+};
+
 type DatasetSource = { id: EvaluationDataset['id']; name: string; url: string };
 type CsvResponse = Pick<Response, 'ok' | 'text'>;
 type CsvFetcher = (url: string) => Promise<CsvResponse>;
@@ -80,6 +87,33 @@ export function parseEvaluationCsv(csv: string): EvaluationCase[] {
       upperDirectionDeg
     };
   });
+}
+
+export function estimateDailyProportionInterval(
+  records: EvaluationCase[],
+  isSuccess: (record: EvaluationCase) => boolean
+): DailyProportionInterval | null {
+  const dailyCounts = new Map<string, { successes: number; total: number }>();
+  for (const record of records) {
+    const day = record.timestamp.slice(0, 10);
+    const count = dailyCounts.get(day) ?? { successes: 0, total: 0 };
+    count.total += 1;
+    if (isSuccess(record)) count.successes += 1;
+    dailyCounts.set(day, count);
+  }
+
+  const dailyRates = [...dailyCounts.values()].map(({ successes, total }) => successes / total);
+  if (dailyRates.length < 2) return null;
+
+  const estimate = dailyRates.reduce((sum, rate) => sum + rate, 0) / dailyRates.length;
+  const variance = dailyRates.reduce((sum, rate) => sum + (rate - estimate) ** 2, 0) / (dailyRates.length - 1);
+  const margin = 1.96 * Math.sqrt(variance / dailyRates.length);
+  return {
+    estimate,
+    lower: Math.max(0, estimate - margin),
+    upper: Math.min(1, estimate + margin),
+    days: dailyRates.length
+  };
 }
 
 export async function loadEvaluationDatasets(fetchCsv: CsvFetcher = url => fetch(url)): Promise<EvaluationDataset[]> {

@@ -1,5 +1,5 @@
 import { expect, it } from 'vitest';
-import { loadEvaluationDatasets, parseEvaluationCsv } from './evaluationCases';
+import { estimateDailyProportionInterval, loadEvaluationDatasets, parseEvaluationCsv } from './evaluationCases';
 
 const header = 'timestamp,temperature_5ft_C,temperature_30ft_C,wind_speed_5ft_mph,wind_speed_30ft_mph,wind_direction_5ft_deg,wind_direction_30ft_deg';
 const validRow = '2026-06-01 00:00:00,22.86,24.81,5.47,7.2,233.5,215.9';
@@ -30,4 +30,19 @@ it('loads both supplied datasets and surfaces fetch failures', async () => {
   expect(datasets.map(dataset => dataset.id)).toEqual(['arizona', 'missouri']);
   expect(datasets.every(dataset => dataset.records.length === 1)).toBe(true);
   await expect(loadEvaluationDatasets(async () => response(false, ''))).rejects.toThrow('Unable to load');
+});
+
+it('estimates a 95% interval from daily inversion rates rather than treating records as independent', () => {
+  const records = parseEvaluationCsv(`${header}\n${validRow}\n${validRow.replace('2026-06-01', '2026-06-02').replace('22.86,24.81', '22.86,20.81')}`);
+  const interval = estimateDailyProportionInterval(records, record => record.upperTemperatureC > record.lowerTemperatureC);
+
+  expect(interval?.estimate).toBe(0.5);
+  expect(interval?.days).toBe(2);
+  expect(interval?.lower).toBe(0);
+  expect(interval?.upper).toBe(1);
+});
+
+it('does not report a confidence interval from a single day', () => {
+  const records = parseEvaluationCsv(`${header}\n${validRow}`);
+  expect(estimateDailyProportionInterval(records, record => record.upperTemperatureC > record.lowerTemperatureC)).toBeNull();
 });
