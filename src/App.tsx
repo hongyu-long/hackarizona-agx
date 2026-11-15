@@ -95,9 +95,32 @@ export function App() {
     setScenario(id);
     setCurrent(entry);
     persist([entry, ...records]);
-    if (orchardSetup.setup.notifications && current.result.status !== entry.result.status && 'Notification' in window && Notification.permission === 'granted') {
-      try { new Notification(`To Spray or Not to Spray demo: ${entry.result.status}`, { body: `${entry.scenario}. Simulated data only.`, tag: 'to-spray-or-not-to-spray-demo-status' }); setNotificationError(''); }
+    if (orchardSetup.setup.notifications && 'Notification' in window && Notification.permission === 'granted') {
+      try { new Notification(`Observation recorded: ${entry.result.status}`, { body: `${entry.scenario}. New simulated orchard observation.`, tag: entry.id }); setNotificationError(''); }
       catch { setNotificationError('System notification could not be shown. The assessment and in-page alerts remain available.'); }
+    }
+  }
+
+  async function toggleNotifications() {
+    if (orchardSetup.setup.notifications) {
+      if (orchardSetup.save({ ...orchardSetup.setup, notifications: false })) setNotificationError('Browser notifications are off.');
+      return;
+    }
+    if (!('Notification' in window) || !window.isSecureContext) {
+      setNotificationError('Browser notifications are unavailable here.');
+      return;
+    }
+    if (Notification.permission === 'denied') {
+      setNotificationError('Notifications are blocked by browser settings. Allow them for this site, then try again.');
+      return;
+    }
+    if (Notification.permission !== 'granted' && !window.confirm('Enable browser notifications for every new observation? Notifications are only sent while this app is open. Continue to the browser permission prompt?')) return;
+    try {
+      const permission = Notification.permission === 'granted' ? 'granted' : await Notification.requestPermission();
+      if (permission === 'granted' && orchardSetup.save({ ...orchardSetup.setup, notifications: true })) setNotificationError('Browser notifications are enabled for new observations.');
+      else setNotificationError('Notifications were not enabled. You can continue using in-app assessments.');
+    } catch {
+      setNotificationError('Browser notification permission could not be requested.');
     }
   }
 

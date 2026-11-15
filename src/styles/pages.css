@@ -62,6 +62,10 @@
   font-size: 25px;
 }
 
+.observations-mobile-list {
+  display: none;
+}
+
 .app-notice {
   padding: 12px 16px;
   border-left: 3px solid #91ac6a;
@@ -220,6 +224,56 @@
 
   .observations-page {
     padding: 16px;
+  }
+
+  .observations-page .observations-table {
+    display: none;
+  }
+
+  .observations-mobile-list {
+    display: grid;
+    gap: 10px;
+  }
+
+  .observation-card {
+    min-width: 0;
+    padding: 14px;
+    border: 1px solid #dce2d6;
+    border-radius: 6px;
+    background: #fff;
+  }
+
+  .observation-card-top,
+  .observation-card-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .observation-card-top time,
+  .observation-card-actions small {
+    color: #647064;
+    font-size: 11px;
+  }
+
+  .observation-card h2 {
+    margin: 12px 0 6px;
+    font-size: 16px;
+    overflow-wrap: anywhere;
+  }
+
+  .observation-trigger {
+    margin: 0 0 12px;
+    color: #53614f;
+    font-size: 12px;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+  }
+
+  .observation-card-actions button {
+    min-height: 42px;
+    padding: 0 12px;
   }
 
   .observations-page .section-heading {
