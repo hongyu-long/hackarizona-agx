@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { OrchardMap } from './OrchardMap';
 import { emptySetup, exportSetup, readSetup, setupKey, validOrchard, validPoint, writeSetup, type Orchard, type Point, type Setup } from './orchard';
 
@@ -21,6 +21,90 @@ export function useOrchardSetup() {
   return { setup, error, editing, setEditing, save, clear };
 }
 export type SetupController = ReturnType<typeof useOrchardSetup>;
+
+export function OrchardOptions({ controller, onComplete }: { controller: SetupController; onComplete?: () => void }) {
+  const { setup, error, save, clear, setEditing } = controller;
+  const [name, setName] = useState(setup.orchard?.name ?? '');
+  const [crop, setCrop] = useState(setup.orchard?.crop ?? '');
+  const [height, setHeight] = useState(setup.orchard?.treeHeightFt?.toString() ?? '');
+  const [lat, setLat] = useState(setup.orchard?.location.lat.toString() ?? '');
+  const [lng, setLng] = useState(setup.orchard?.location.lng.toString() ?? '');
+  const [boundary, setBoundary] = useState<Point[]>(setup.orchard?.boundary ?? []);
+  const [mapVisible, setMapVisible] = useState(false);
+  const [confirmed, setConfirmed] = useState(false);
+  const [message, setMessage] = useState('');
+  const [locating, setLocating] = useState(false);
+  const candidate = { lat: Number(lat), lng: Number(lng) };
+  const location = lat.trim() && lng.trim() && validPoint(candidate) ? candidate : null;
+  const orchard: Orchard | null = location ? {
+    name: name.trim(),
+    location,
+    boundary,
+    crop: crop.trim(),
+    treeHeightFt: height.trim() ? Number(height) : null
+  } : null;
+
+  function loadLocation(showMap = true) {
+    if (!navigator.geolocation || !window.isSecureContext) {
+      setMessage('Location requires a secure connection. Enter the orchard coordinates manually.');
+      return;
+    }
+    setLocating(true);
+    setMessage('Waiting for browser location permission…');
+    navigator.geolocation.getCurrentPosition(position => {
+      setLocating(false);
+      const point = { lat: position.coords.latitude, lng: position.coords.longitude };
+      setLat(point.lat.toFixed(6));
+      setLng(point.lng.toFixed(6));
+      setConfirmed(false);
+      if (showMap) setMapVisible(true);
+      setMessage(`Location loaded (reported accuracy about ${Math.round(position.coords.accuracy)} m). Confirm this point represents your orchard before saving.`);
+    }, error => {
+      setLocating(false);
+      setMessage(error.code === error.PERMISSION_DENIED
+        ? 'Location permission was denied. Allow it in your browser site settings or enter coordinates manually.'
+        : 'Location is unavailable. Enter the orchard coordinates manually.');
+    }, { enableHighAccuracy: false, timeout: 10000, maximumAge: 60000 });
+  }
+
+  useEffect(() => {
+    if (!setup.orchard) loadLocation(true);
+  }, []);
+
+  function submit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!orchard || !validOrchard(orchard) || !confirmed) {
+      setMessage('Enter a name and valid orchard coordinates, then confirm the location.');
+      return;
+    }
+    if (save({ version: 1, completed: true, orchard, notifications: setup.notifications })) {
+      setEditing(false);
+      onComplete?.();
+    }
+  }
+
+  return <section className="panel onboarding" aria-labelledby="setup-title">
+    <div className="section-heading"><div><span className="eyebrow">ORCHARD PROFILE · LOCAL ONLY</span><h2 id="setup-title">Set up your orchard</h2></div></div>
+    <p className="help">Add a few orchard details to personalize the workspace. Location is used only to set the orchard point and is not tracked.</p>
+    <form onSubmit={submit}>
+      <div className="setup-fields">
+        <label>Orchard name *<input maxLength={100} value={name} onChange={e => setName(e.target.value)} autoComplete="off" required /></label>
+        <label>Crop / orchard type<input maxLength={100} placeholder="e.g. Almond" value={crop} onChange={e => setCrop(e.target.value)} /></label>
+        <label>Latitude *<input type="number" min="-85" max="85" step="any" value={lat} onChange={e => { setLat(e.target.value); setConfirmed(false); }} required /></label>
+        <label>Longitude *<input type="number" min="-180" max="180" step="any" value={lng} onChange={e => { setLng(e.target.value); setConfirmed(false); }} required /></label>
+        <label>Average tree height · ft <small>(optional)</small><input type="number" min="0.1" step="any" value={height} onChange={e => setHeight(e.target.value)} /></label>
+      </div>
+      <p className="help">Map tiles are provided by OpenStreetMap or Esri. The selected provider receives the viewed area and your IP address.</p>
+      <div className="setup-actions"><button type="button" disabled={locating} onClick={() => loadLocation(true)}>{locating ? 'Loading location…' : 'Load current location'}</button><button className="primary" type="submit">Save orchard & open dashboard</button></div>
+    </form>
+    {mapVisible && <OrchardMap autoLoad location={location} boundary={boundary} onLocation={point => { setLat(point.lat.toFixed(6)); setLng(point.lng.toFixed(6)); setConfirmed(false); }} onBoundary={setBoundary} />}
+    <label className="checkbox-label"><input type="checkbox" checked={confirmed} onChange={e => setConfirmed(e.target.checked)} /> I confirm these coordinates represent my orchard.</label>
+    {message && <p className="setup-message" role="status">{message}</p>}
+    {error && <p className="storage-error" role="alert">{error}</p>}
+    <div className="setup-actions"><button onClick={() => { setEditing(false); onComplete?.(); }}>Continue without saving</button>{error && <button onClick={clear}>Clear saved settings</button>}</div>
+  </section>;
+}
+
 export function OrchardSetup({ controller }: { controller: SetupController }) {
   const { setup, error, save, clear, setEditing } = controller;
   const [step, setStep] = useState(1);
