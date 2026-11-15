@@ -1,0 +1,9 @@
+﻿{
+    "startUtc":  "2024-06-01T12:30:00Z",
+    "endUtc":  "2024-06-01T13:00:00Z",
+    "lowerTempC":  "17.1199",
+    "upperTempC":  "20.1022",
+    "deltaC":  2.9822999999999986,
+    "lowerFinalQF":  "0",
+    "upperFinalQF":  "0"
+}
