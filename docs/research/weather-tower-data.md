@@ -1,4 +1,4 @@
-# Real weather tower sources for SprayWise
+# Real weather tower sources for To Spray or Not to Spray
 
 Checked 2026-11-15 against official sources. This is source feasibility research, not a connected sensor feed or a verified field deployment.
 

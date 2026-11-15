@@ -3,7 +3,7 @@
 ## Three-minute demo
 
 1. Select **Baseline**. Inspect both heights and the GO explanation.
-2. Select **Hidden inversion**. The lower-only wind check still finds no flag, but upper air is 4°C warmer and SprayWise reports STOP.
+2. Select **Hidden inversion**. The lower-only wind check still finds no flag, but upper air is 4°C warmer and To Spray or Not to Spray reports STOP.
 3. Select **Upper wind**. Inspect both the upper wind and speed-shear reasons.
 4. Open **View evidence** in the observation log to show exact readings, UTC observation/evaluation times, rules and triggers. Reload to demonstrate persistence.
 5. Select **Sensor missing**. The status becomes UNAVAILABLE rather than implying favorable conditions.

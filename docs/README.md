@@ -1,6 +1,6 @@
 # Documentation
 
-SprayWise is the project name; **Spray or Wait?** is the supplied challenge title.
+**To Spray or Not to Spray** is the project name. Its catchphrase is **To Spray or Not To Spray? That is the Question.** The supplied challenge title is **Spray or Wait?**
 
 | Location | Purpose |
 | --- | --- |

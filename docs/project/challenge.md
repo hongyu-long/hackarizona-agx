@@ -2,7 +2,7 @@
 
 **Using weather intelligence to prevent pesticide drift in orchards**
 
-Source: challenge text supplied by the user. This is an organized reference to that text, not an independently verified publication. SprayWise is the team's implementation name.
+Source: challenge text supplied by the user. This is an organized reference to that text, not an independently verified publication. To Spray or Not to Spray is the team's implementation name.
 
 ## Problem and audience
 

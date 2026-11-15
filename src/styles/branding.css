@@ -1,0 +1,45 @@
+.brand-copy {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.brand-name {
+  font-size: 17px;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+.brand-tagline {
+  color: #647064;
+  font: 500 9px/1.2 'DM Sans', sans-serif;
+}
+
+@media (max-width: 560px) {
+  header {
+    height: auto;
+    min-height: 88px;
+    gap: 8px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .brand {
+    min-width: 0;
+    flex: 1;
+    gap: 7px;
+  }
+
+  .brand-name {
+    font-size: 14px;
+    white-space: normal;
+  }
+
+  .brand-tagline {
+    font-size: 8px;
+  }
+
+  .demo-badge {
+    display: none;
+  }
+}

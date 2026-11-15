@@ -27,5 +27,5 @@ export function writeSetup(store: Pick<Storage, 'setItem'>, setup: Setup) {
 }
 export function exportSetup(setup: Setup) {
   const url = URL.createObjectURL(new Blob([JSON.stringify(setup, null, 2)], { type: 'application/json' }));
-  const a = document.createElement('a'); a.href = url; a.download = 'spraywise-orchard.json'; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+  const a = document.createElement('a'); a.href = url; a.download = 'to-spray-or-not-to-spray-orchard.json'; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
 }

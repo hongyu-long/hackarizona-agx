@@ -1,4 +1,6 @@
-# SprayWise
+# To Spray or Not to Spray
+
+**To Spray or Not To Spray? That is the Question.**
 
 Weather decision support for orchard pesticide applicators, built for HackArizona-AGx 2026's **Spray or Wait?** challenge.
 

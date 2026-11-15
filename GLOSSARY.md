@@ -1,6 +1,6 @@
-# SprayWise
+# To Spray or Not to Spray
 
-SprayWise analyzes weather observations at multiple heights in an orchard to support an applicator's decisions.
+To Spray or Not to Spray analyzes weather observations at multiple heights in an orchard to support an applicator's decisions.
 
 ## Language
 
