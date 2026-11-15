@@ -16,6 +16,8 @@ class WeatherData:
         self.wind_above_10mph = False
         self.large_difference = False
         
+    def get_timestamp(self):
+        return self.timestamp
     
     def get_5ft_temp(self):
         return self.temperature_5ft_C
@@ -34,6 +36,8 @@ class WeatherData:
     
     def get_30ft_direction(self):
         return self.wind_direction_30ft_deg
+    
+    
     
     def flag_temp_difference(self):
         if self.temperature_30ft_C > self.temperature_5ft_C:
@@ -88,6 +92,7 @@ def main():
         data_point.flag_temp_difference()
         data_point.flag_windspeed_too_high()
         data_point.flag_windspeed_too_low()
+        time_stamp = data_point.get_timestamp()
         difference_in_speed = data_point.flag_large_difference()
         weather_data_list.append(data_point)
         
