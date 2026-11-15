@@ -4,6 +4,9 @@ import { defaults, evaluateRisk, finite, validConfig, type Config, type Pair, ty
 import { readLog, writeLog, storageKey, type Evaluation } from './storage';
 import scenarios from './scenarios.json';
 import './style.css';
+import { OrchardSetup, useOrchardSetup } from './Onboarding';
+import { exportSetup } from './orchard';
+import './onboarding.css';
 
 const descriptions = { GO: 'No configured weather flags', CAUTION: 'Review changing conditions', STOP: 'Weather risk detected', UNAVAILABLE: 'Not enough reliable data' };
 const nextChecks = { GO: 'Check the pesticide label and on-site conditions before deciding.', CAUTION: 'Review the flagged differences and reassess conditions before deciding.', STOP: 'Wait and reassess the flagged conditions. Follow the pesticide label.', UNAVAILABLE: 'Restore complete, current readings from both heights, then reassess.' };
@@ -23,6 +26,8 @@ function Sensor({ r, label }: { r: Reading; label: string }) {
   return <div className="sensor"><div className="sensor-top"><span>{label}</span><strong>{r.heightFt} <small>ft AGL</small></strong></div><div className="sensor-values"><div><b>{r.temperatureC ?? '—'}<small> °C</small></b><span>Temperature</span></div><div><b>{r.speedMph ?? '—'}<small> mph</small></b><span>Wind speed</span></div><div><b className="direction">{finite(r.directionDeg) && <i style={{ transform: `rotate(${r.directionDeg + 180}deg)` }}>↑</i>}{r.directionDeg ?? '—'}<small>°</small></b><span>Wind from · true N</span></div></div></div>;
 }
 function App() {
+  const orchardSetup = useOrchardSetup();
+  const [notificationError, setNotificationError] = useState('');
   const [loaded] = useState(() => { try { return { records: readLog(localStorage), error: '' }; } catch { return { records: [] as Evaluation[], error: 'Existing records could not be read. They have not been overwritten. Export this session or explicitly clear local storage to start again.' }; } });
   const [records, setRecords] = useState(loaded.records);
   const [blocked, setBlocked] = useState(!!loaded.error);
@@ -42,6 +47,10 @@ function App() {
   }
   function run(id = scenario, rules = config) {
     const entry = generate(id, rules); setScenario(id); setCurrent(entry); persist([entry, ...records]);
+    if (orchardSetup.setup.notifications && current.result.status !== entry.result.status && 'Notification' in window && Notification.permission === 'granted') {
+      try { new Notification(`SprayWise demo: ${entry.result.status}`, { body: `${entry.scenario}. ${descriptions[entry.result.status]}. Simulated data only.`, tag: 'spraywise-demo-status' }); setNotificationError(''); }
+      catch { setNotificationError('System notification could not be shown. The assessment and in-page alerts remain available.'); }
+    }
   }
   function applyRules(e: React.FormEvent) {
     e.preventDefault();
@@ -59,6 +68,7 @@ function App() {
   const lowerFlag = !finite(pair.lower.speedMph) ? 'Lower wind unavailable' : pair.lower.speedMph < config.minWind || pair.lower.speedMph > config.maxWind ? 'Lower-height wind flag' : 'No lower-height wind flag';
   const selected = records.find(r => r.id === selectedId);
   return <><header><a className="brand" href="#"><span className="brand-icon">↟</span> SprayWise<span className="brand-sub">ORCHARD INTELLIGENCE</span></a><span className="demo-badge"><span/>SIMULATED DATA</span></header>
+  <div className="setup-container">{orchardSetup.editing ? <OrchardSetup controller={orchardSetup}/> : <section className="panel orchard-summary"><div><span className="eyebrow">YOUR ORCHARD · LOCAL ONLY</span><h2>{orchardSetup.setup.orchard?.name ?? 'Orchard not configured'}</h2><p>{orchardSetup.setup.orchard ? `${orchardSetup.setup.orchard.location.lat.toFixed(5)}, ${orchardSetup.setup.orchard.location.lng.toFixed(5)} · ${orchardSetup.setup.orchard.crop || 'Crop not set'}` : 'You can set up a location and preferences whenever you are ready.'}</p><small>No real weather tower is connected. The demonstration below uses simulated readings.</small></div><div className="setup-actions"><button onClick={() => orchardSetup.setEditing(true)}>Edit orchard & permissions</button><button onClick={() => exportSetup(orchardSetup.setup)}>Export settings</button><button onClick={orchardSetup.clear}>Clear settings</button></div></section>}{notificationError && <p role="status">{notificationError}</p>}{!orchardSetup.editing && orchardSetup.error && <p role="alert">{orchardSetup.error}</p>}</div>
   <main><div className="intro"><div><div className="eyebrow">FIELD CONDITIONS / DEMONSTRATION</div><h1>A clearer view.<br/><em>A better spray decision.</em></h1><p>What happens above the trees matters. Compare two heights<br className="desktop"/> to see what a ground-level station can miss.</p></div><div className="site-label"><span className="site-icon">⌖</span><div><strong>Demo orchard</strong><span>Single observation point · flat terrain</span><span>5 ft + 30 ft above ground</span></div></div></div>
   <section className="scenario-bar" aria-label="Demo scenarios"><div className="scenario-label"><span className="eyebrow">EXPLORE A SCENARIO</span><small>Select to analyze & log</small></div><div className="scenario-buttons">{scenarios.map((s, i) => <button key={s.id} className={scenario === s.id ? 'active' : ''} aria-pressed={scenario === s.id} onClick={() => run(s.id)}><span>0{i + 1}</span>{s.name}</button>)}</div></section>
   <div className="dashboard"><section className={`status-panel ${result.status.toLowerCase()}`} aria-live="polite"><div className="section-heading"><span className="eyebrow">TWO-HEIGHT ASSESSMENT</span><span className="snapshot">SIMULATED SNAPSHOT</span></div><div className="status-title"><span className="status-icon">{result.status === 'GO' ? '✓' : result.status === 'UNAVAILABLE' ? '?' : '!'}</span><div><h2>{result.status === 'UNAVAILABLE' ? 'UNAVAILABLE' : result.status}</h2><p>{descriptions[result.status]}</p></div></div><div className="reasons">{result.errors.map((error, i) => <p key={i}>{error}</p>)}{result.alerts.map(alert => <div className="reason" key={alert.code}><span className="reason-dot"/><div><strong>{alert.code.replaceAll('_', ' ')}</strong><p>{alert.reason}</p></div></div>)}{result.status === 'GO' && <p>Neither height triggers the configured temperature or wind rules. This is not permission to spray.</p>}</div><div className="next-check"><span>NEXT CHECK</span><p>{nextChecks[result.status]}</p></div><div className="assessment-footer"><span>{time(current.evaluatedAt)}</span><button onClick={() => run()}>Reassess & log ↻</button></div><small className="snapshot-note">A fixed demo snapshot, not a live sensor feed. Reassess to generate new simulated readings.</small></section>

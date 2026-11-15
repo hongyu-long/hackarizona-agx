@@ -30,3 +30,13 @@ These notes record the interview and the subsequently approved MVP scope.
 - Invalid required input produces UNAVAILABLE. This MVP validates the pair before risk analysis and does not retain partial weather alerts from invalid pairs.
 - Observations are explicitly fixed simulated snapshots; reassessing generates a new timestamped event. No live monitoring is implied.
 - Store up to 1,000 records without silent eviction. Offer JSON export, explicit clearing and visible unsaved state on write failure.
+
+## Follow-up: map and first-use onboarding (design in progress)
+
+- User wants an actual street/satellite basemap, rather than an orchard illustration. Basemap selection is not yet settled.
+- Investigate existing real weather towers: location, measured heights, available variables and access permissions. Research is separate from permission to connect any particular source.
+- On first use, explain the purpose of location and notification access and offer permission requests.
+- User approved: orchard name and confirmed location; optional crop, average tree height and boundary; skippable location/notification prompts; local-only storage with edit/clear/export and a future database planned.
+- Do not reopen scheduling or development-order questions in this interview.
+
+Implemented first-use flow: explanation before permission buttons, street map with explicit tile-provider disclosure, manual coordinates, optional boundary drawing, separate notification step, local profile persistence and export. Notifications only cover simulated status changes while the page is open. Satellite imagery, geocoding search, real tower connection and backend storage remain unimplemented. Source feasibility is recorded in `research/weather-tower-data.md`.
