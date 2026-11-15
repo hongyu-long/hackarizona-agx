@@ -1,0 +1,110 @@
+﻿[
+    {
+        "name":  "NEON.D14.SRER.DP1.00002.001.000.010.030.SAAT_30min.2024-06.basic.20240706T162340Z.csv",
+        "product":  "DP1.00002.001",
+        "sourceEndpoint":  "https://data.neonscience.org/api/v0/data/DP1.00002.001/SRER/2024-06?package=basic",
+        "retrievedAtUtc":  "2026-11-15T20:47:29.1669761Z",
+        "expectedBytes":  148241,
+        "bytes":  148241,
+        "sha256":  "B49EA1458EABAE83098083E2688BC98ED5681F1F9580639D9FF2F65C73112EB4"
+    },
+    {
+        "name":  "NEON.D14.SRER.DP1.00002.001.000.020.030.SAAT_30min.2024-06.basic.20240706T162340Z.csv",
+        "product":  "DP1.00002.001",
+        "sourceEndpoint":  "https://data.neonscience.org/api/v0/data/DP1.00002.001/SRER/2024-06?package=basic",
+        "retrievedAtUtc":  "2026-11-15T20:47:29.6799951Z",
+        "expectedBytes":  148383,
+        "bytes":  148383,
+        "sha256":  "62B6D378E62504CA06D3BE7A292E296056A727BD3378DC91EAB5AE80EF0B55AC"
+    },
+    {
+        "name":  "NEON.D14.SRER.DP1.00002.001.000.030.030.SAAT_30min.2024-06.basic.20240706T162340Z.csv",
+        "product":  "DP1.00002.001",
+        "sourceEndpoint":  "https://data.neonscience.org/api/v0/data/DP1.00002.001/SRER/2024-06?package=basic",
+        "retrievedAtUtc":  "2026-11-15T20:47:30.1831434Z",
+        "expectedBytes":  148382,
+        "bytes":  148382,
+        "sha256":  "8621920CC3E2746072B00878537E72C030490BDD6F80963C4CE2CA76B21B9DA2"
+    },
+    {
+        "name":  "NEON.D14.SRER.DP1.00002.001.readme.20260123T000749Z.txt",
+        "product":  "DP1.00002.001",
+        "sourceEndpoint":  "https://data.neonscience.org/api/v0/data/DP1.00002.001/SRER/2024-06?package=basic",
+        "retrievedAtUtc":  "2026-11-15T20:47:30.6881053Z",
+        "expectedBytes":  14888,
+        "bytes":  14888,
+        "sha256":  "09A6ACFDBDE03CBDD14CB5331664EB714735139C8D321CCE63447B0812C7D855"
+    },
+    {
+        "name":  "NEON.D14.SRER.DP1.00002.001.sensor_positions.20240706T162340Z.csv",
+        "product":  "DP1.00002.001",
+        "sourceEndpoint":  "https://data.neonscience.org/api/v0/data/DP1.00002.001/SRER/2024-06?package=basic",
+        "retrievedAtUtc":  "2026-11-15T20:47:30.9177844Z",
+        "expectedBytes":  1077,
+        "bytes":  1077,
+        "sha256":  "C05A0878093363A88A6365972369DCBB553CB954D8836C0A5B2115ADA395A637"
+    },
+    {
+        "name":  "NEON.D14.SRER.DP1.00002.001.variables.20240706T162340Z.csv",
+        "product":  "DP1.00002.001",
+        "sourceEndpoint":  "https://data.neonscience.org/api/v0/data/DP1.00002.001/SRER/2024-06?package=basic",
+        "retrievedAtUtc":  "2026-11-15T20:47:31.3457006Z",
+        "expectedBytes":  18664,
+        "bytes":  18664,
+        "sha256":  "44D39B46CC6078E04317992F437E1DFD32E2C1D3167DF3DEF0267D98EB44563F"
+    },
+    {
+        "name":  "NEON.D14.SRER.DP1.00001.001.000.010.030.2DWSD_30min.2024-06.basic.20240706T155650Z.csv",
+        "product":  "DP1.00001.001",
+        "sourceEndpoint":  "https://data.neonscience.org/api/v0/data/DP1.00001.001/SRER/2024-06?package=basic",
+        "retrievedAtUtc":  "2026-11-15T20:47:31.7718580Z",
+        "expectedBytes":  173510,
+        "bytes":  173510,
+        "sha256":  "51A8166DDCA4A3D14777A1C5D3C10C9ADE7E03E707CBFDA10D04171D2D9CC774"
+    },
+    {
+        "name":  "NEON.D14.SRER.DP1.00001.001.000.020.030.2DWSD_30min.2024-06.basic.20240706T155650Z.csv",
+        "product":  "DP1.00001.001",
+        "sourceEndpoint":  "https://data.neonscience.org/api/v0/data/DP1.00001.001/SRER/2024-06?package=basic",
+        "retrievedAtUtc":  "2026-11-15T20:47:32.0597541Z",
+        "expectedBytes":  173445,
+        "bytes":  173445,
+        "sha256":  "5CDED6C86B32871080A299EC795FA2B9BCB0DAB63D1E85183731C6BFF662BA18"
+    },
+    {
+        "name":  "NEON.D14.SRER.DP1.00001.001.000.030.030.2DWSD_30min.2024-06.basic.20240706T155650Z.csv",
+        "product":  "DP1.00001.001",
+        "sourceEndpoint":  "https://data.neonscience.org/api/v0/data/DP1.00001.001/SRER/2024-06?package=basic",
+        "retrievedAtUtc":  "2026-11-15T20:47:32.3500982Z",
+        "expectedBytes":  173008,
+        "bytes":  173008,
+        "sha256":  "2D71BCE59C077462A7158BAAD9BA29AEEFA3947CE14679BFE05ACDE7E4FECC51"
+    },
+    {
+        "name":  "NEON.D14.SRER.DP1.00001.001.readme.20260123T000749Z.txt",
+        "product":  "DP1.00001.001",
+        "sourceEndpoint":  "https://data.neonscience.org/api/v0/data/DP1.00001.001/SRER/2024-06?package=basic",
+        "retrievedAtUtc":  "2026-11-15T20:47:32.5479941Z",
+        "expectedBytes":  37310,
+        "bytes":  37310,
+        "sha256":  "8AEE53800776338E1F7E419FA0AC770B804628047DCAD1FD7B4149FFD8C99E88"
+    },
+    {
+        "name":  "NEON.D14.SRER.DP1.00001.001.sensor_positions.20240706T155650Z.csv",
+        "product":  "DP1.00001.001",
+        "sourceEndpoint":  "https://data.neonscience.org/api/v0/data/DP1.00001.001/SRER/2024-06?package=basic",
+        "retrievedAtUtc":  "2026-11-15T20:47:32.7231530Z",
+        "expectedBytes":  1008,
+        "bytes":  1008,
+        "sha256":  "7B928FA84D19F7D09D8946F474D22A8D481A9FF0CD441BBEB861BB5DAFCF363E"
+    },
+    {
+        "name":  "NEON.D14.SRER.DP1.00001.001.variables.20240706T155650Z.csv",
+        "product":  "DP1.00001.001",
+        "sourceEndpoint":  "https://data.neonscience.org/api/v0/data/DP1.00001.001/SRER/2024-06?package=basic",
+        "retrievedAtUtc":  "2026-11-15T20:47:33.0526355Z",
+        "expectedBytes":  28195,
+        "bytes":  28195,
+        "sha256":  "CF5357DEC472666F7A9815CD73ABBC3FB79B8DF71416CC6A530F71DA1CE85770"
+    }
+]
