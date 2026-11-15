@@ -14,7 +14,8 @@ const extractors: Record<string, (current: Interval, previous: Interval) => numb
   lowerTemperatureChange: (c,p) => c.lower.temperatureC - p.lower.temperatureC,
   upperTemperatureChange: (c,p) => c.upper.temperatureC - p.upper.temperatureC
 };
-export const featureNames = Object.keys(extractors);
+const measurementHeightFeatureNames = ['lowerTemperatureHeightM', 'upperTemperatureHeightM', 'lowerWindHeightM', 'upperWindHeightM'];
+export const featureNames = [...Object.keys(extractors), ...measurementHeightFeatureNames];
 function object(v: unknown): v is Record<string, unknown> { return !!v && typeof v === 'object' && !Array.isArray(v); }
 function level(v: unknown): v is Level {
   return object(v) && ['temperatureC','temperatureQf','windSpeedMps','windSpeedQf','windDirectionDeg','windDirectionQf'].every(k => typeof v[k] === 'number' && Number.isFinite(v[k]));
@@ -69,7 +70,7 @@ export function buildExperiment(inputs: unknown[]) {
       if (!validProvenance(provenance)) throw new Error('Invalid input provenance.');
       examples.push({ id: `${c.site.id}/${current.end}`, site: c.site.id, cutoff: current.end, inputEnd: current.end, targetEnd: future.end, label, persistence, provenance,
         transition: label === persistence ? 'stable' : label ? 'onset' : 'dissipation',
-        features: Object.values(extractors).map(extract => extract(current, previous)) });
+        features: [...Object.values(extractors).map(extract => extract(current, previous)), positions[0].heightM, positions.at(-1)!.heightM, positions[0].wind.heightM, positions.at(-1)!.wind.heightM] });
     }
   }
   if (rawRecords > 672) throw new Error('Raw sample budget exceeded.');

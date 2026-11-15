@@ -1,9 +1,12 @@
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 import { runModel } from './model.mjs';
 import { buildExperiment, score } from '../../src/features/forecast/experiment.ts';
 import { parseForecast } from '../../src/features/forecast/artifact.ts';
 import { withWeatherContext } from '../../src/features/forecast/context.ts';
 import { createHash } from 'node:crypto';
+
+if (existsSync('.env')) process.loadEnvFile('.env');
 
 // Node 22.18+ can execute the erasable TypeScript experiment contract directly.
 const paths = process.argv.slice(2);

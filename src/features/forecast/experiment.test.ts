@@ -7,6 +7,13 @@ it('constructs next-interval targets without leaking future temperature into inp
   expect(first.rawRecords).toBe(336);
   expect(first.limitations).toContain('Only 1 site available; two-site requirement is unmet.');
   const row = first.examples[0];
+  expect(first.featureNames.slice(-4)).toEqual(['lowerTemperatureHeightM', 'upperTemperatureHeightM', 'lowerWindHeightM', 'upperWindHeightM']);
+  expect(row.features.slice(-4)).toEqual([
+    row.provenance.temperatureHeightsM[0],
+    row.provenance.temperatureHeightsM[1],
+    row.provenance.windHeightsM[0],
+    row.provenance.windHeightsM[1]
+  ]);
   const changed = structuredClone(data);
   const target = changed.records.find(r => r.start === row.cutoff)!;
   target.levels[target.levels.length - 1].temperatureC = target.levels[0].temperatureC + 100;
