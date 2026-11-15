@@ -6,7 +6,7 @@ import scenarios from './data/scenarios.json';
 import { assessReplay, type ReplayTimezone } from './features/weather/historical';
 import { historicalCatalog } from './data/historical';
 import { DashboardPage } from './pages/DashboardPage';
-import { ForecastPanel } from './features/forecast/ForecastPanel';
+import { EvaluationCasesPanel } from './features/weather/EvaluationCasesPanel';
 import { HistoricalReplayPage } from './pages/HistoricalReplayPage';
 import { ObservationsPage } from './pages/ObservationsPage';
 import { OrchardPage } from './pages/OrchardPage';
@@ -23,7 +23,7 @@ const pages: { id: Page; label: string }[] = [
   { id: 'observations', label: 'Observations' },
   { id: 'rules', label: 'Rules' },
   { id: 'historical', label: 'Historical replay' },
-  { id: 'forecast', label: 'Forecast experiment' }
+  { id: 'forecast', label: 'Data evaluation' }
 ];
 
 function pageFromHash(): Page | null {
@@ -154,8 +154,8 @@ export function App() {
       {notificationError && <p role="status" className="app-notice">{notificationError}</p>}
       {currentPage === 'dashboard' && <DashboardPage current={current} scenario={scenario} scenarios={scenarios} config={config} onScenario={id => run(id)} onReassess={() => run()} onHistoricalReplay={() => navigate('historical')}/>}
       {currentPage === 'historical' && <HistoricalReplayPage config={config} timeDisplay={timeDisplay} onTimeDisplayChange={setTimeDisplay} onSave={saveHistorical}/>}
-      {currentPage === 'forecast' && <ForecastPanel/>}
-      {currentPage === 'orchard' && <OrchardPage controller={orchardSetup} onComplete={() => navigate('dashboard')}/>}
+      {currentPage === 'forecast' && <EvaluationCasesPanel config={config}/>}
+      {currentPage === 'orchard' && <OrchardPage controller={orchardSetup} onComplete={() => navigate('dashboard')} onToggleNotifications={() => void toggleNotifications()}/>}
       {currentPage === 'observations' && <ObservationsPage records={records} savedIds={savedIds} saveError={saveError} blocked={blocked} selectedId={selectedId} timeDisplay={timeDisplay} onTimeDisplayChange={setTimeDisplay} onDownload={() => download(records)} onClear={clearLog} onRetry={() => persist(records)} onSelect={setSelectedId}/>}
       {currentPage === 'rules' && <RulesPage config={config} draft={draft} error={configError} onDraftChange={(key, value) => setDraft(previous => ({ ...previous, [key]: value }))} onSubmit={applyRules}/>}
     </main>

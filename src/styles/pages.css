@@ -507,10 +507,84 @@
   align-items: end;
 }
 
+.data-evaluation {
+  margin-top: 24px;
+}
+
+.data-evaluation h1 {
+  margin: 8px 0;
+  font-size: 28px;
+}
+
+.dataset-summary {
+  display: grid;
+  align-content: center;
+  gap: 5px;
+  color: #647064;
+  font-size: 11px;
+}
+
+.case-navigation {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 12px;
+}
+
+.case-navigation label {
+  display: grid;
+  gap: 7px;
+  color: #596b56;
+  font-size: 11px;
+}
+
+.case-navigation input {
+  width: 100%;
+  accent-color: #537c4b;
+}
+
+.case-metrics {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 16px 0;
+}
+
+.case-metrics .metric {
+  padding: 14px;
+}
+
+.case-metrics .metric > span {
+  display: block;
+  min-height: 28px;
+  line-height: 1.5;
+}
+
+.data-evaluation .historical-status > p {
+  color: #697d64;
+  font-size: 12px;
+}
+
+.data-evaluation .historical-status > small {
+  line-height: 1.7;
+}
+
 @media (max-width: 650px) {
   .historical-controls,
-  .historical-readings {
+  .historical-readings,
+  .case-navigation {
     grid-template-columns: 1fr;
+  }
+
+  .case-navigation button {
+    width: 100%;
+  }
+
+  .case-metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .case-metrics .metric + .metric {
+    border-left: 0;
+    border-top: 1px solid #dfe5d7;
   }
 
   .historical-page .section-heading {

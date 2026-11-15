@@ -23,7 +23,7 @@ function triggerSummary(record: Evaluation) {
   return record.result.errors.length ? record.result.errors.join(' ') : record.result.alerts.length ? record.result.alerts.map(alert => alert.code.replaceAll('_', ' ')).join(' · ') : 'No configured flags';
 }
 
-export function ObservationsPage({ records, savedIds, saveError, blocked, selectedId, onDownload, onClear, onRetry, onSelect }: Props) {
+export function ObservationsPage({ records, savedIds, saveError, blocked, selectedId, timeDisplay, onTimeDisplayChange, onDownload, onClear, onRetry, onSelect }: Props) {
   const selected = records.find(record => record.id === selectedId);
   const evaluatedTime = (record: Evaluation) => record.source === 'NEON' ? formatReplayTimestamp(record.evaluatedAt, record.site?.timezone ?? 'America/Phoenix', timeDisplay) : formatTime(record.evaluatedAt);
   const observedTime = (record: Evaluation) => record.source === 'NEON' ? formatObservationTime(record.observation, record.site?.timezone ?? 'America/Phoenix', timeDisplay) : formatTime(record.pair.lower.observedAt);
