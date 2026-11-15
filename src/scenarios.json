@@ -1,0 +1,6 @@
+[
+  {"id":"baseline","name":"Baseline","description":"No configured weather flags","temperature":[22,20],"speed":[5,6],"direction":[90,110]},
+  {"id":"inversion","name":"Hidden inversion","description":"Ground wind looks fine. Upper air tells another story.","temperature":[18,22],"speed":[5,6],"direction":[90,110]},
+  {"id":"wind","name":"Upper wind","description":"Strong wind above the trees","temperature":[22,20],"speed":[5,12],"direction":[90,110]},
+  {"id":"missing","name":"Sensor missing","description":"Upper readings unavailable","temperature":[22,null],"speed":[5,null],"direction":[90,null]}
+]
