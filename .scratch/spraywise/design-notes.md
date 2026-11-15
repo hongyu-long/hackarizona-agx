@@ -2,6 +2,17 @@
 
 These notes record the interview and the subsequently approved MVP scope.
 
+## Current multi-height weather MVP decisions (2026-11-15)
+
+- Scope is the user's five stated requirements: at least two height readings for temperature and wind; flag an inversion when upper temperature exceeds lower; flag wind below 3 mph or above 10 mph; flag configurable large differences between heights; provide plain-language GO/CAUTION/STOP reasons; save timestamped readings and triggered alerts.
+- Exclude additional weather, pesticide-property, equipment recommendation, geographic modeling and machine-learning factors from this MVP.
+- Display the selected location's local time by default and allow switching to UTC.
+- For inversion comparison, use the lowest and highest available observation levels as the lower/upper pair. Preserve their actual measured heights in details.
+- Keep configurable wind speed/direction shear bands at the current demonstration defaults (4/7 mph, 45/90 degrees); label them as unvalidated demo settings. Product-label requirements govern actual spraying.
+- Arizona is the first test region; prefer national data sources for broader coverage. Real historical data is preferred, and simulated readings remain acceptable.
+- Each log entry stores both the source observation interval and the status evaluation time. Display both in the selected location's local time by default; allow switching their display to UTC.
+- NEON SRER June 2024 real data is downloaded and validated as described in `research/neon-srer-download-validation.md`. SRER is shrubland, not an orchard. No application integration is decided yet.
+
 ## Confirmed decisions
 
 - Analyze current conditions from multi-height observations; do not train a model for the first version.

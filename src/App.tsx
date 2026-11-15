@@ -3,8 +3,11 @@ import { defaults, evaluateRisk, validConfig, type Config, type Pair, type Readi
 import { readLog, writeLog, storageKey, type Evaluation } from './features/weather/storage';
 import { useOrchardSetup } from './features/orchard/Onboarding';
 import scenarios from './data/scenarios.json';
-import { ForecastPanel } from './features/forecast/ForecastPanel';
+import { assessReplay, type ReplayTimezone } from './features/weather/historical';
+import { historicalCatalog } from './data/historical';
 import { DashboardPage } from './pages/DashboardPage';
+import { ForecastPanel } from './features/forecast/ForecastPanel';
+import { HistoricalReplayPage } from './pages/HistoricalReplayPage';
 import { ObservationsPage } from './pages/ObservationsPage';
 import { OrchardPage } from './pages/OrchardPage';
 import { RulesPage, type RuleDraft } from './pages/RulesPage';
@@ -13,12 +16,13 @@ import './styles/branding.css';
 import './styles/onboarding.css';
 import './styles/pages.css';
 
-type Page = 'dashboard' | 'orchard' | 'observations' | 'rules' | 'forecast';
+type Page = 'dashboard' | 'orchard' | 'observations' | 'rules' | 'historical' | 'forecast';
 const pages: { id: Page; label: string }[] = [
   { id: 'dashboard', label: 'Dashboard' },
   { id: 'orchard', label: 'Orchard' },
   { id: 'observations', label: 'Observations' },
   { id: 'rules', label: 'Rules' },
+  { id: 'historical', label: 'Historical replay' },
   { id: 'forecast', label: 'Forecast experiment' }
 ];
 
@@ -62,6 +66,7 @@ export function App() {
   const [savedIds, setSavedIds] = useState(new Set(loaded.records.map(record => record.id)));
   const [scenario, setScenario] = useState('inversion');
   const [config, setConfig] = useState<Config>({ ...defaults });
+  const [timeDisplay, setTimeDisplay] = useState<ReplayTimezone>('local');
   const [draft, setDraft] = useState<RuleDraft>({ speedCaution: '4', speedStop: '7', directionCaution: '45', directionStop: '90' });
   const [configError, setConfigError] = useState('');
   const [current, setCurrent] = useState<Evaluation>(() => generate('inversion', defaults));
@@ -96,6 +101,11 @@ export function App() {
     }
   }
 
+  function saveHistorical(start: string, display: ReplayTimezone) {
+    const entry = assessReplay(historicalCatalog, start, new Date().toISOString(), config, display);
+    persist([entry, ...records]);
+  }
+
   function applyRules(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const values = Object.fromEntries(Object.entries(draft).map(([key, value]) => [key, value.trim() === '' ? NaN : Number(value)])) as Pick<Config, keyof RuleDraft>;
@@ -115,16 +125,17 @@ export function App() {
   const initialSetup = !orchardSetup.setup.completed && orchardSetup.editing;
   const currentPage = initialSetup ? 'orchard' : page;
   return <>
-    <header className="app-header"><a className="brand" href="#/dashboard"><span className="brand-icon">↟</span><span className="brand-copy"><span className="brand-name">To Spray or Not to Spray</span><span className="brand-tagline">To Spray or Not To Spray? That is the Question.</span></span></a>{!initialSetup && <span className="demo-badge"><span/>SIMULATED DATA</span>}</header>
+    <header className="app-header"><a className="brand" href="#/dashboard"><span className="brand-icon">↟</span><span className="brand-copy"><span className="brand-name">To Spray or Not to Spray</span><span className="brand-tagline">To Spray or Not To Spray? That is the Question.</span></span></a>{!initialSetup && <span className="demo-badge"><span/>{currentPage === 'historical' ? 'HISTORICAL DATA' : currentPage === 'observations' ? 'HISTORICAL OR SIMULATED' : 'SIMULATED DATA'}</span>}</header>
     {!initialSetup && <AppNavigation page={currentPage}/>}
     <main className="app-main">
       {notificationError && <p role="status" className="app-notice">{notificationError}</p>}
-      {currentPage === 'dashboard' && <DashboardPage current={current} scenario={scenario} scenarios={scenarios} config={config} onScenario={id => run(id)} onReassess={() => run()}/>}
+      {currentPage === 'dashboard' && <DashboardPage current={current} scenario={scenario} scenarios={scenarios} config={config} onScenario={id => run(id)} onReassess={() => run()} onHistoricalReplay={() => navigate('historical')}/>}
+      {currentPage === 'historical' && <HistoricalReplayPage config={config} timeDisplay={timeDisplay} onTimeDisplayChange={setTimeDisplay} onSave={saveHistorical}/>}
       {currentPage === 'forecast' && <ForecastPanel/>}
       {currentPage === 'orchard' && <OrchardPage controller={orchardSetup} onComplete={() => navigate('dashboard')}/>}
-      {currentPage === 'observations' && <ObservationsPage records={records} savedIds={savedIds} saveError={saveError} blocked={blocked} selectedId={selectedId} onDownload={() => download(records)} onClear={clearLog} onRetry={() => persist(records)} onSelect={setSelectedId}/>}
+      {currentPage === 'observations' && <ObservationsPage records={records} savedIds={savedIds} saveError={saveError} blocked={blocked} selectedId={selectedId} timeDisplay={timeDisplay} onTimeDisplayChange={setTimeDisplay} onDownload={() => download(records)} onClear={clearLog} onRetry={() => persist(records)} onSelect={setSelectedId}/>}
       {currentPage === 'rules' && <RulesPage config={config} draft={draft} error={configError} onDraftChange={(key, value) => setDraft(previous => ({ ...previous, [key]: value }))} onSubmit={applyRules}/>}
     </main>
-    {!initialSetup && <footer className="app-footer"><span className="footer-brand">↟ To Spray or Not to Spray</span><p>Decision support, not authorization to spray. Follow pesticide labels, on-site checks and applicable regulations. No system guarantees zero drift. All readings in this demo are simulated.</p><span>MVP / 01</span></footer>}
+    {!initialSetup && <footer className="app-footer"><span className="footer-brand">↟ To Spray or Not to Spray</span><p>Decision support, not authorization to spray. Follow pesticide labels, on-site checks and applicable regulations. No system guarantees zero drift. Dashboard readings are simulated; Arizona replay readings are historical NEON data, not a live feed.</p><span>MVP / 01</span></footer>}
   </>;
 }

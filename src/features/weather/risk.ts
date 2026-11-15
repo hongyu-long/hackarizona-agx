@@ -1,5 +1,5 @@
 export type Status = 'GO' | 'CAUTION' | 'STOP' | 'UNAVAILABLE';
-export type Reading = { id: string; site: string; heightFt: number; temperatureC: number | null; speedMph: number | null; directionDeg: number | null; observedAt: string };
+export type Reading = { id: string; site: string; heightFt: number; heightM?: number; windHeightFt?: number; windHeightM?: number; qualityFlag?: number; temperatureC: number | null; speedMph: number | null; directionDeg: number | null; observedAt: string };
 export type Pair = { lower: Reading; upper: Reading };
 export type Config = { version: string; minWind: number; maxWind: number; speedCaution: number; speedStop: number; directionCaution: number; directionStop: number; maxAgeSeconds: number; maxSkewSeconds: number };
 export const defaults: Config = { version: 'demo-1', minWind: 3, maxWind: 10, speedCaution: 4, speedStop: 7, directionCaution: 45, directionStop: 90, maxAgeSeconds: 120, maxSkewSeconds: 60 };
