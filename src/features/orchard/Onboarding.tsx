@@ -135,7 +135,7 @@ export function OrchardSetup({ controller }: { controller: SetupController }) {
   }
   async function enableNotifications() {
     if (!('Notification' in window) || !window.isSecureContext) { setMessage('System notifications are unavailable in this browser. In-page alerts still work.'); return; }
-    try { const permission = await Notification.requestPermission(); setNotificationEnabled(permission === 'granted'); setMessage(permission === 'granted' ? 'Permission granted. Save settings to enable demo status-change notifications while this page is open.' : 'Notifications are not enabled. In-page alerts still work; browser site settings control future permission changes.'); }
+    try { const permission = await Notification.requestPermission(); setNotificationEnabled(permission === 'granted'); setMessage(permission === 'granted' ? 'Permission granted. Save settings to receive a notification for each new simulated observation while this page is open.' : 'Notifications are not enabled. In-page alerts still work; browser site settings control future permission changes.'); }
     catch { setMessage('Notification permission could not be requested. In-page alerts still work.'); }
   }
   function next() {
